@@ -1,7 +1,7 @@
 """Part 2 Module"""
 import click
 
-from day_05.opcodes import process
+from shared.opcodes import process
 
 
 @click.command()

@@ -1,7 +1,7 @@
 """Part 1 Module"""
 import click
 
-from day_02.process import process
+from shared.opcodes import process
 
 
 @click.command()
@@ -17,8 +17,8 @@ def part_01(input_path, noun, verb):
     codes[1] = noun
     codes[2] = verb
 
-    result = process(codes)
-    print(f"result is {result}")
+    process(codes)
+    print(f"result is {codes[0]}")
 
 
 if __name__ == "__main__":

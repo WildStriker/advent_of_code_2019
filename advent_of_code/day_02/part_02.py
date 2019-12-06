@@ -1,7 +1,7 @@
 """Part 2 Module"""
 import click
 
-from day_02.process import process
+from shared.opcodes import process
 
 
 @click.command()
@@ -19,8 +19,8 @@ def part_02(input_path, target):
             # update starting "noun" and "verb"
             codes[1] = noun
             codes[2] = verb
-            result = process(codes)
-            if result == target:
+            process(codes)
+            if codes[0] == target:
                 print(f"100 * {noun} + {verb} = {100 * noun + verb}")
                 return
 
