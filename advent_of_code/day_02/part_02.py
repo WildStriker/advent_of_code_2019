@@ -19,7 +19,11 @@ def part_02(input_path, target):
             # update starting "noun" and "verb"
             codes[1] = noun
             codes[2] = verb
-            process(codes)
+
+            processing = process(codes)
+            for _ in processing:
+                pass
+
             if codes[0] == target:
                 print(f"100 * {noun} + {verb} = {100 * noun + verb}")
                 return

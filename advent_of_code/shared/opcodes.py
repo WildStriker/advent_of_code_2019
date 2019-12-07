@@ -1,5 +1,5 @@
 """opcode and process logic"""
-from typing import List, Tuple
+from typing import Generator, List, Tuple, Union
 
 
 def opcode_1(value_1: int, value_2: int) -> int:
@@ -29,23 +29,21 @@ def opcode_2(value_1: int, value_2: int) -> int:
     return value_1 * value_2
 
 
-def opcode_3() -> int:
-    """prompts user for a number
+def opcode_3(value: int) -> int:
+    """returns value back
+
+    Keyword Arguments:
+        value {int} -- input value
 
     Returns:
-        int -- returns valid integer
+        int -- returns value
     """
-    while True:
-        try:
-            selection = int(input("Input a number: "))
-            return selection
-        except ValueError:
-            pass
+    return value
 
 
 def opcode_4(value: int):
     """prints given value"""
-    print(value)
+    return value
 
 
 def opcode_5(value_1: int, value_2: int, instruction_pointer: int) -> int:
@@ -160,7 +158,7 @@ def get_input(codes: List[int], input_position: int, input_mode: int) -> int:
     ValueError(f"Unknown Input Mode: {input_mode}")
 
 
-def process(codes: List[int]) -> int:
+def process(codes: List[int]) -> Generator[Union[int, str], int, None]:
     """process given inputs, returns result in the first position
 
     Arguments:
@@ -169,9 +167,12 @@ def process(codes: List[int]) -> int:
     Raises:
         ValueError: when an unknown instruction is given an error will occur
 
-    Returns:
-        int -- once opcode 99 is reach and the program terminates,
-               results from the first position is returned
+    Yields:
+        Generator[
+            Union[int, str],
+            int,
+            None] -- yield values back as int for use as outputs.
+                     when input is received an "ok" message is returned
     """
     instruction_pointer = 0
     while True:
@@ -207,8 +208,9 @@ def process(codes: List[int]) -> int:
 
             instruction_pointer += 4
         elif opcode == 3:
-
-            output_value = opcode_3()
+            value = yield
+            yield "ok"
+            output_value = opcode_3(value)
             output_position = codes[instruction_pointer + 1]
             codes[output_position] = output_value
 
@@ -216,7 +218,7 @@ def process(codes: List[int]) -> int:
         elif opcode == 4:
             input_value_1 = get_input(codes, input_position_1, input_mode_1)
 
-            opcode_4(input_value_1)
+            yield opcode_4(input_value_1)
 
             instruction_pointer += 2
         elif opcode == 5:

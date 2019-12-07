@@ -11,7 +11,12 @@ def part_02(input_path):
     with open(input_path) as file_input:
         codes = list(map(int, file_input.read().split(",")))
 
-    process(codes)
+    processing = process(codes)
+    next(processing)
+    _ok = processing.send(5)
+
+    for output in processing:
+        print(output)
 
 
 if __name__ == "__main__":

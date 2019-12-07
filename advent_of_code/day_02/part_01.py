@@ -17,7 +17,10 @@ def part_01(input_path, noun, verb):
     codes[1] = noun
     codes[2] = verb
 
-    process(codes)
+    processing = process(codes)
+    for _ in processing:
+        pass
+
     print(f"result is {codes[0]}")
 
 
