@@ -32,18 +32,13 @@ def amp_checks(codes: List[int], phase_settings: List[int]) -> int:
             _ok = amp.send(phase_setting)
             amps.append(amp)
 
-        next(amps[0])
-        _ok = amps[0].send(0)
+        last_output = 0
         try:
             while True:
-                for index, amp in enumerate(amps):
-                    last_output = next(amps[index])
-                    if index + 1 >= len(amps):
-                        next(amps[0])
-                        amps[0].send(last_output)
-                    else:
-                        next(amps[index + 1])
-                        _ok = amps[index + 1].send(last_output)
+                for amp in amps:
+                    next(amp)
+                    _ok = amp.send(last_output)
+                    last_output = next(amp)
         except StopIteration:
             pass
         results.append(last_output)
