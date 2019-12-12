@@ -1,5 +1,5 @@
 """amplify logic module"""
-from typing import Dict, List
+from typing import Dict, DefaultDict
 
 from shared.opcodes import process
 
@@ -20,11 +20,12 @@ DOWN = 0.5
 LEFT = 0.75
 
 
-def paint(codes: List[int], painted: Dict[tuple, int] = None) -> Dict[tuple, int]:
+def paint(codes: DefaultDict[int, int], painted: Dict[tuple, int] = None) -> Dict[tuple, int]:
     """read paint instructions from intcode computer with provided inputs
 
     Arguments:
-        codes {List[int]} -- intcode inputs, this will output the robots paint instructions
+        codes {DefaultDict[int, int]} -- intcode inputs,
+                                         this will output the robots paint instructions
 
     Keyword Arguments:
         painted {Dict[tuple, int]} -- initial haul paint (default: {None})
@@ -75,11 +76,11 @@ def paint(codes: List[int], painted: Dict[tuple, int] = None) -> Dict[tuple, int
     return painted
 
 
-def render_painted(codes: List[int], painted: Dict[tuple, int]):
+def render_painted(codes: DefaultDict[int, int], painted: Dict[tuple, int]):
     """print painted haul to screen
 
     Arguments:
-        codes {List[int]} -- intcode instructions
+        codes {DefaultDict[int, int]} -- intcode instructions
         painted {Dict[tuple, int]} -- starting haul paint
     """
     painted = paint(codes, painted)
@@ -110,11 +111,11 @@ def render_painted(codes: List[int], painted: Dict[tuple, int]):
         print(''.join(output))
 
 
-def count_painted(codes: List[int]) -> int:
+def count_painted(codes: DefaultDict[int, int]) -> int:
     """count all panels the robot has painted
 
     Arguments:
-        codes {List[int]} -- intcode instructions
+        codes {DefaultDict[int, int]} -- intcode instructions
 
     Returns:
         int -- painted panel count

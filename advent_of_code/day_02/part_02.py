@@ -1,7 +1,9 @@
 """Part 2 Module"""
+import copy
+
 import click
 
-from shared.opcodes import process
+from shared.opcodes import process, read_codes
 
 
 @click.command()
@@ -10,12 +12,12 @@ from shared.opcodes import process
 def part_02(input_path, target):
     """Part 2"""
     with open(input_path) as file_input:
-        init_codes = list(map(int, file_input.read().split(",")))
+        init_codes = read_codes(file_input)
 
     # loop through each possible noun and verb (0-99)
     for noun in range(100):
         for verb in range(100):
-            codes = init_codes.copy()
+            codes = copy.copy(init_codes)
             # update starting "noun" and "verb"
             codes[1] = noun
             codes[2] = verb

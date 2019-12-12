@@ -1,7 +1,7 @@
 """Part 1 Module"""
 import click
 
-from shared.opcodes import process
+from shared.opcodes import process, read_codes
 
 
 @click.command()
@@ -11,7 +11,7 @@ from shared.opcodes import process
 def part_01(input_path, noun, verb):
     """Part 1"""
     with open(input_path) as file_input:
-        codes = list(map(int, file_input.read().split(",")))
+        codes = read_codes(file_input)
 
     # replace positions 1 and 2
     codes[1] = noun

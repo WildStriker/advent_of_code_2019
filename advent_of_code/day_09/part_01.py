@@ -2,19 +2,16 @@
 import click
 
 from day_09.boost import run
+from shared.opcodes import read_codes
 
 
 @click.command()
 @click.option("--input", "input_path", type=click.Path(exists=True), default="inputs\\day_09.txt")
 @click.option("--phase", type=int, default=1)
-@click.option("--memory", type=int, default=2048)
-def part_01(input_path, phase, memory):
+def part_01(input_path, phase):
     """Part 1"""
     with open(input_path) as file_input:
-        codes = list(map(int, file_input.read().split(",")))
-        initial_size = len(codes)
-        for _ in range(memory - initial_size):
-            codes.append(0)
+        codes = read_codes(file_input)
 
     run(codes, phase)
 

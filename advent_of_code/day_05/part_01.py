@@ -1,7 +1,7 @@
 """Part 1 Module"""
 import click
 
-from shared.opcodes import process
+from shared.opcodes import process, read_codes
 
 
 @click.command()
@@ -9,7 +9,7 @@ from shared.opcodes import process
 def part_01(input_path):
     """Part 1"""
     with open(input_path) as file_input:
-        codes = list(map(int, file_input.read().split(",")))
+        codes = read_codes(file_input)
 
     processing = process(codes)
     next(processing)

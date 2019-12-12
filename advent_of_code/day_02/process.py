@@ -1,5 +1,5 @@
 """opt code and process logic"""
-from typing import List
+from typing import DefaultDict
 
 
 def opt_1(value_1: int, value_2: int) -> int:
@@ -29,11 +29,11 @@ def opt_2(value_1: int, value_2: int) -> int:
     return value_1 * value_2
 
 
-def process(codes: List[int]) -> int:
+def process(codes: DefaultDict[int, int]) -> int:
     """process given inputs, returns result in the first position
 
     Arguments:
-        codes {List[int]} -- list of opt codes and parameters
+        codes {DefaultDict[int, int]} -- list of opt codes and parameters
 
     Raises:
         ValueError: when an unknown instruction is given an error will occur

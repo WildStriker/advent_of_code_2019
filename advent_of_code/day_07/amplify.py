@@ -1,15 +1,15 @@
 """amplify logic module"""
 import itertools
-from typing import List
+from typing import List, DefaultDict
 
 from shared.opcodes import process
 
 
-def amp_checks(codes: List[int], phase_settings: List[int]) -> int:
+def amp_checks(codes: DefaultDict[int, int], phase_settings: List[int]) -> int:
     """check all possible phase settings for optimal settings for amplifiers
 
     Arguments:
-        codes {List[int]} -- original list of codes to start on each amp
+        codes {DefaultDict[int, int]} -- original list of codes to start on each amp
         phase_settings {List[int]} -- known phase settings (not in a particular order)
 
     Returns:

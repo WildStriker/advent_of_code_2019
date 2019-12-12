@@ -1,5 +1,6 @@
 """opcode and process logic"""
-from typing import Generator, List, Tuple, Union
+import collections
+from typing import DefaultDict, Generator, TextIO, Tuple, Union
 
 
 def opcode_1(value_1: int, value_2: int) -> int:
@@ -154,11 +155,11 @@ def get_instructions(code: int) -> Tuple[int, int, int]:
     return opcode, input_mode_1, input_mode_2, output_mode
 
 
-def get_input(codes: List[int], input_position: int, relative_base: int, input_mode: int) -> int:
+def get_input(codes: DefaultDict[int, int], input_position: int, relative_base: int, input_mode: int) -> int:
     """retuns the input value based on input mode
 
     Arguments:
-        codes {List[int]} -- list of all codes
+        codes {DefaultDict[int, int]} -- list of all codes
         input_position {int} -- position input instruction is in
         relative_base {int} -- relative position
         input_mode {int} -- mode to interupt where the value is
@@ -185,7 +186,7 @@ def get_input(codes: List[int], input_position: int, relative_base: int, input_m
     ValueError(f"Unknown Input Mode: {input_mode}")
 
 
-def set_output(codes: List[int],
+def set_output(codes: DefaultDict[int, int],
                output_value: int,
                output_position: int,
                relative_base: int,
@@ -193,7 +194,7 @@ def set_output(codes: List[int],
     """set output value in list of instructions / codes
 
     Arguments:
-        codes {List[int]} -- instructions list
+        codes {DefaultDict[int, int]} -- instructions list
         output_value {int} -- value being set
         output_position {int} -- output position
         relative_base {int} -- starting point for relative mode
@@ -213,11 +214,11 @@ def set_output(codes: List[int],
         raise ValueError("Unknown output mode: {output_mode}")
 
 
-def process(codes: List[int]) -> Generator[Union[int, str], int, None]:
+def process(codes: DefaultDict[int, int]) -> Generator[Union[int, str], int, None]:
     """process given inputs, returns result in the first position
 
     Arguments:
-        codes {List[int]} -- list of opcodes and parameters
+        codes {DefaultDict[int, int]} -- list of opcodes and parameters
 
     Raises:
         ValueError: when an unknown instruction is given an error will occur
@@ -380,3 +381,20 @@ def process(codes: List[int]) -> Generator[Union[int, str], int, None]:
             instruction_pointer += 2
         else:
             raise ValueError(f"unknown opcode: {opcode}")
+
+
+def read_codes(file_input: TextIO) -> DefaultDict[int, int]:
+    """read file input and return intcode instructions
+
+    Arguments:
+        file_input {TextIO} -- file stream
+
+    Returns:
+        DefaultDict[int, int] -- dict of memory index, and code instruction
+    """
+    codes_list = list(map(int, file_input.read().split(",")))
+    codes = collections.defaultdict(int)
+    for index, code in enumerate(codes_list):
+        codes[index] = code
+
+    return codes
