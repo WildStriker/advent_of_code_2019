@@ -1,6 +1,6 @@
 """opcode and process logic"""
 import collections
-from typing import DefaultDict, Generator, TextIO, Tuple, Union
+from typing import Callable, DefaultDict, Generator, TextIO, Tuple, Union
 
 
 def opcode_1(value_1: int, value_2: int) -> int:
@@ -155,7 +155,10 @@ def get_instructions(code: int) -> Tuple[int, int, int]:
     return opcode, input_mode_1, input_mode_2, output_mode
 
 
-def get_input(codes: DefaultDict[int, int], input_position: int, relative_base: int, input_mode: int) -> int:
+def get_input(codes: DefaultDict[int, int],
+              input_position: int,
+              relative_base: int,
+              input_mode: int) -> int:
     """retuns the input value based on input mode
 
     Arguments:
@@ -214,11 +217,14 @@ def set_output(codes: DefaultDict[int, int],
         raise ValueError("Unknown output mode: {output_mode}")
 
 
-def process(codes: DefaultDict[int, int]) -> Generator[Union[int, str], int, None]:
+def process(codes: DefaultDict[int, int],
+            input_prompt: Callable = None) -> Generator[Union[int, str], int, None]:
     """process given inputs, returns result in the first position
 
     Arguments:
         codes {DefaultDict[int, int]} -- list of opcodes and parameters
+        input_prompt {Callable} -- input prompt callback,
+                                   when given used instead of expecting yield results
 
     Raises:
         ValueError: when an unknown instruction is given an error will occur
@@ -285,8 +291,11 @@ def process(codes: DefaultDict[int, int]) -> Generator[Union[int, str], int, Non
 
             instruction_pointer += 4
         elif opcode == 3:
-            value = yield
-            yield "ok"
+            if input_prompt:
+                value = input_prompt()
+            else:
+                value = yield
+                yield "ok"
             output_value = opcode_3(value)
             output_position = codes[instruction_pointer + 1]
             output_mode = input_mode_1
