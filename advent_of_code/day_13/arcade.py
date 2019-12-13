@@ -1,8 +1,7 @@
 """game logic module"""
 import collections
-from typing import DefaultDict, Dict, Tuple
-
-import click
+import curses
+from typing import DefaultDict
 
 from shared.opcodes import process
 
@@ -42,36 +41,6 @@ def count_block(codes: DefaultDict[int, int]) -> int:
     return count[BLOCK]
 
 
-def draw_board(board: Dict[tuple, int],
-               score: int,
-               max_height: int,
-               max_width: int) -> Tuple[tuple, tuple]:
-    """draw game board, returns current paddle and ball positions
-
-    Arguments:
-        board {Dict[tuple, int]} -- board state
-        score {int} -- current score
-        max_height {int} -- max tile height
-        max_width {int} -- max tile width
-
-    Returns:
-        Tuple[tuple, tuple] -- paddle, ball positions
-    """
-    for top in range(max_height + 1):
-        line = []
-        for left in range(max_width + 1):
-            position = (top, left)
-            tile = board[position]
-            if tile == BALL:
-                ball = position
-            elif tile == PADDLE:
-                paddle = position
-            line.append(TILE_OUTPUT[tile])
-        print(''.join(line))
-    print(f"Score: {score}")
-    return paddle, ball
-
-
 def play(codes: DefaultDict[int, int], is_human: bool):
     """play the game!
 
@@ -79,21 +48,31 @@ def play(codes: DefaultDict[int, int], is_human: bool):
         codes {DefaultDict[int, int]} -- intcode instructions
         is_human {bool} -- read in user input if true (fun, but very...slow...)
     """
-    board = {}
+    screen = curses.initscr()
+    curses.noecho()
+    curses.cbreak()
+    curses.curs_set(False)
+    screen.keypad(True)
 
     steps = 0
     max_height = 0
     max_width = 0
+    paddle = (0, 0)
+    ball = (0, 0)
 
     # for user inputs
     def draw_input():
-        draw_board(board, score, max_height, max_width)
-        return click.prompt("joystick position", type=click.IntRange(-1, 1))
+        screen.refresh()
+        key = screen.getch()
+        if key == curses.KEY_LEFT:
+            return -1
+        if key == curses.KEY_RIGHT:
+            return 1
+        return 0
 
     # for automatic inputs
     def draw_ai():
-        paddle, ball = draw_board(board, score, max_height, max_width)
-
+        screen.refresh()
         if paddle[1] == ball[1]:
             return 0
 
@@ -107,19 +86,35 @@ def play(codes: DefaultDict[int, int], is_human: bool):
     else:
         game = process(codes, draw_ai)
 
-    for left in game:
-        steps += 1
-        top = next(game)
-        position = (top, left)
+    try:
+        for left in game:
+            steps += 1
+            top = next(game)
+            position = (top, left)
 
-        max_width = max(max_width, left)
-        max_height = max(max_height, top)
+            max_width = max(max_width, left)
+            max_height = max(max_height, top)
 
-        if position == (0, -1):
-            score = next(game)
-        else:
-            tile = next(game)
-            board[(top, left)] = tile
+            if position == (0, -1):
+                score = next(game)
+                screen.addstr(max_height + 1, 0, f"Score: {score}")
+            else:
+                tile = next(game)
+                if tile == BALL:
+                    ball = position
+                elif tile == PADDLE:
+                    paddle = position
+                screen.addstr(top, left, TILE_OUTPUT[tile])
 
-    print("Game Complete!")
-    draw_board(board, score, max_height, max_width)
+        message_1 = "Game Complete!"
+        message_2 = "Press Any Key to Exit..."
+        screen.addstr(max_height // 2, max_width // 2 -
+                      len(message_1) // 2, message_1)
+        screen.addstr(max_height // 2 + 1, max_width //
+                      2 - len(message_2) // 2, message_2)
+        screen.refresh()
+        screen.getch()
+    except curses.error:
+        print("Please resize the terminal in order to run the game!")
+    finally:
+        curses.endwin()
