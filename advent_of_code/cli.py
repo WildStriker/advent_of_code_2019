@@ -17,6 +17,7 @@ from day_13.commands import day_13
 from day_14.commands import day_14
 from day_15.commands import day_15
 from day_16.commands import day_16
+from day_17.commands import day_17
 
 
 @click.group()
@@ -41,3 +42,4 @@ cli.add_command(day_13)
 cli.add_command(day_14)
 cli.add_command(day_15)
 cli.add_command(day_16)
+cli.add_command(day_17)
