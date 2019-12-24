@@ -23,6 +23,7 @@ from day_19.commands import day_19
 from day_20.commands import day_20
 from day_21.commands import day_21
 from day_22.commands import day_22
+from day_23.commands import day_23
 
 
 @click.group()
@@ -53,3 +54,4 @@ cli.add_command(day_19)
 cli.add_command(day_20)
 cli.add_command(day_21)
 cli.add_command(day_22)
+cli.add_command(day_23)
